@@ -1,0 +1,130 @@
+.slidebar-chat {
+    height: calc(100vh - 60px);
+    /* Chọn chiều cao phù hợp, ví dụ 100% - 60px cho thanh Tab */
+    overflow-y: auto;
+    /* Kích thước nếu nội dung vượt quá kích thước của div */
+}
+
+.chat-item {
+    background-color: white;
+    /* margin-left: 1%; */
+    width: 100%;
+    height: 85px;
+    margin-bottom: 5px;
+    display: flex;
+    /* justify-content: space-around; */
+    align-items: center;
+    border: 3px solid #f6f6f6;
+    border-radius: 5px;
+}
+.chat-item:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+.active-chat-item {
+    background-color: #dce0e8;
+}
+.active-chat-item:hover {
+    background-color: #f6fef6;
+}
+.input-chat {
+    padding-left: 7px;
+    padding-right: 7px;
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: groove;
+    outline: 0;
+    border-width: 0 0 2px;
+    border-color: silver;
+}
+.input-chat:focus {
+    border-color: #399cbd;
+}
+
+.container-input-outline {
+    position: relative;
+}
+.input-inside {
+    padding-left: 10px;
+    border-radius: 2px;
+    border: none;
+    background-color: #ffffff;
+    border-top-style: groove;
+    outline: none;
+}
+.button-inside {
+    position: absolute;
+    right: 5px;
+    top: 3%;
+    bottom: 3%;
+    height: 94%;
+    border: none;
+    outline: none;
+}
+.button-hover:hover {
+    cursor: pointer;
+}
+.loading-btn {
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    border: none;
+    outline: none;
+}
+
+.search-slidebar {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    height: 100%;
+    padding: 2px;
+}
+.search-slidebar-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    background-color: #f6f6f6;
+}
+.search-slidebar-container:focus-within {
+    background-color: white;
+    border: solid 1px silver;
+}
+
+.search-slidebar-container *:focus {
+    background-color: white;
+}
+
+.search-slidebar-container .search-icon {
+    color: silver;
+    margin: 10px;
+    width: 4%;
+}
+/* .search-slidebar-container .search-icon:hover {
+  color: gray;
+  cursor: pointer;
+} */
+.search-slidebar-container input {
+    width: 82%;
+    border: none;
+    outline-width: 0;
+    font-size: 15px;
+    background-color: #f6f6f6;
+    color: gray;
+}
+.txt-search {
+    width: 75%;
+    height: 25px;
+    outline-width: 0;
+}
+.btn-close-search-mode {
+    border-radius: 50%;
+    border: none;
+    margin-left: 5px;
+    background-color: white;
+}
+.btn-close-search-mode:hover {
+    background-color: #f5f5f5;
+}

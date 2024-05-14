@@ -1,0 +1,77 @@
+stages:
+    - build
+    - deploy
+
+.build: &build
+    stage: build
+    image: docker:latest
+    services:
+        - docker:18-dind
+    script:
+        - echo $DOCKER_TOKEN | docker login --username $DOCKER_USERNAME --password-stdin
+        - docker build . -t $DOCKER_USERNAME/thanhtuocfarm_web:$TAG
+        - docker push $DOCKER_USERNAME/thanhtuocfarm_web:$TAG
+
+.deploy: &deploy
+    stage: deploy
+    image: linuxserver/openssh-server:amd64-latest
+    before_script:
+        - eval "$(ssh-agent)"
+        - ssh-add <(echo "$PRIVATE_KEY")
+        - mkdir -p ~/.ssh
+        - echo -e "$SSH_CONFIG" > ~/.ssh/config
+
+# DEVELOP ENVIRONMENT
+develop-build:
+    <<: *build
+    variables:
+        TAG: dev
+    before_script:
+        - echo -e "$DEVELOP_ENV" > .env
+        - cp .env.dev .env
+    only:
+        - develop
+
+develop-deploy:
+    <<: *deploy
+    script:
+        - ssh develop "cd /home/windsoft/app/thanh_tuoc_farm/services && ./deploy.sh web && exit"
+    only:
+        - develop
+
+
+# STAGING ENVIRONMENT
+staging-build:
+    <<: *build
+    variables:
+        TAG: staging
+    before_script:
+        - echo -e "$DEVELOP_ENV" > .env
+        - cp .env.staging .env
+    only:
+        - staging
+
+staging-deploy:
+    <<: *deploy
+    script:
+        - ssh develop "cd /home/windsoft/app/thanh_tuoc_farm_staging/services && ./deploy.sh web && exit"
+    only:
+        - staging
+
+# PRODUCT ENVIRONMENT
+prod-build:
+    <<: *build
+    variables:
+        TAG: latest
+    before_script:
+        - echo -e "$DEVELOP_ENV" > .env
+        - cp .env.prod .env
+    only:
+        - master
+
+prod-deploy:
+    <<: *deploy
+    script:
+        - ssh production "cd /root/app/thanh_tuoc_farm/services && ./deploy.sh web && exit"
+    only:
+        - master
