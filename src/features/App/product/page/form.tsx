@@ -16,7 +16,9 @@ import styled from 'styled-components';
 import SelectDocument from '../components/SelectDocument';
 import { workService } from '../services';
 import axios from 'axios';
-const apiUrl = 'https://b121-2405-4802-1cae-d580-e0cf-60e4-dc25-b862.ngrok-free.app/api/Products';
+import SelectComponent from '@/components/SelectComponent';
+import SelectAuthorComponent from '../components/SelectAuthor';
+const apiUrl = 'http://localhost:5243/api/Products';
 const ProductForm = () => {
     interface ExactType {
         name: String | Number;
@@ -26,7 +28,6 @@ const ProductForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = React.useState(false);
-    const [file, setFile] = React.useState<any>(null);
 
     const fieldValuesRef = React.useRef<any>();
     const location = useLocation();
@@ -36,12 +37,14 @@ const ProductForm = () => {
         if (id) {
             const dataUpload = {
                 ...data,
+                id: id,
+                authorobj: { id: data?.author?.key },
             };
             axios
                 .put(apiUrl + `/${id}`, dataUpload)
                 .then((res) => {
                     if (res.status) {
-                        Notification('success', 'Cập nhật công việc thành công');
+                        Notification('success', 'Cập nhật sản phẩm thành công');
                         navigate(location?.state?.prevUrl || -1, { state: location.state });
                     }
                 })
@@ -50,14 +53,15 @@ const ProductForm = () => {
                 });
         } else {
             const dataUpload = {
-                name: data.name || '',
+                ...data,
+                authorobj: { id: data?.author?.key },
             };
             axios
                 .post(apiUrl, dataUpload)
                 .then((res) => {
                     if (res.status) {
-                        Notification('success', 'Thêm công việc thành công');
-                        navigate('/work');
+                        Notification('success', 'Thêm sản phẩm thành công');
+                        navigate('/product');
                     }
                 })
                 .finally(() => setLoading(false));
@@ -68,15 +72,21 @@ const ProductForm = () => {
             repeatType: TYPE_OPTION.NONE,
         });
         if (!id) return;
-        workService.detailWork(Number(id), { page: 1 }).then((res: any) => {
+        axios.get(`${apiUrl}/${id}`).then((res: any) => {
             if (res.status) {
                 fieldValuesRef.current = res.data;
                 const fieldValues: any = {
                     ...res.data,
                 };
+                console.log('🚀 ~ axios.get ~ fieldValues:', fieldValues);
 
                 form.setFieldsValue({
                     name: fieldValues?.name,
+                    category: fieldValues?.category,
+                    description: fieldValues?.description,
+                    price: fieldValues?.price,
+                    author: fieldValues?.authorobj?.id,
+                    totalQuantity: fieldValues?.totalQuantity,
                 });
             }
         });
@@ -96,32 +106,6 @@ const ProductForm = () => {
                             <Row style={{ flexDirection: 'row' }} gutter={[20, 0]}>
                                 <Col span={24}>
                                     <FormItemComponent
-                                        label={<b>Ảnh sản phẩm</b>}
-                                        inputField={
-                                            <UploadComponent
-                                                accept=".png, .jpg, .jpeg"
-                                                isUploadServerWhenUploading
-                                                uploadType="single"
-                                                listType="picture-card"
-                                                maxLength={1}
-                                                onSuccessUpload={(file: any) => {
-                                                    setFile(file?.relativeUrl);
-                                                }}
-                                                isShowFileList
-                                                initialFile={
-                                                    []
-                                                    // values?.avatar && [
-                                                    //     {
-                                                    //         url: values?.avatar,
-                                                    //         uid: uuid(),
-                                                    //         name: 'avatar',
-                                                    //     },
-                                                    // ]
-                                                }
-                                            />
-                                        }
-                                    />
-                                    <FormItemComponent
                                         rules={[rules.required('Vui lòng nhập tên sản phẩm!'), rules.validateTitle]}
                                         name="name"
                                         normalize={(value: any) => value.trimStart()}
@@ -133,6 +117,19 @@ const ProductForm = () => {
                                         name="category"
                                         label={<b>Danh mục</b>}
                                         inputField={
+                                            <Select>
+                                                <Select.Option value={1}>Truyện trinh thám</Select.Option>
+                                                <Select.Option value={2}>Truyện kinh dị</Select.Option>
+                                                <Select.Option value={3}>Truyện hành động</Select.Option>
+                                                <Select.Option value={4}>Truyện hài kịch</Select.Option>
+                                                <Select.Option value={5}>Truyện tình cảm</Select.Option>
+                                            </Select>
+                                        }
+                                    />
+                                    {/* <FormItemComponent
+                                        name="category"
+                                        label={<b>Phân loại</b>}
+                                        inputField={
                                             <SelectDocument
                                                 // value={params?.search ? { value: params?.search } : undefined}
                                                 onChange={(item: any) => {}}
@@ -140,19 +137,29 @@ const ProductForm = () => {
                                                 placeholder="Chọn danh mục"
                                             />
                                         }
-                                    />
-
+                                    /> */}
                                     <FormItemComponent
-                                        rules={['Vui lòng nhập giá sản phẩm!']}
-                                        name="content"
+                                        // rules={['Vui lòng nhập giá sản phẩm!']}
+                                        name="salePrice"
                                         label={<b>Giá sản phẩm</b>}
                                         inputField={
                                             <InputNumber style={{ width: '100%' }} placeholder="Nhập giá sản phẩm" />
                                         }
                                     />
                                     <FormItemComponent
-                                        rules={['Vui lòng nhập số lượng sản phẩm!']}
-                                        name="content"
+                                        // rules={['Vui lòng nhập giá sản phẩm!']}
+                                        name="originalPrice"
+                                        label={<b>Giá nhập</b>}
+                                        inputField={
+                                            <InputNumber
+                                                style={{ width: '100%' }}
+                                                placeholder="Nhập giá gốc sản phẩm"
+                                            />
+                                        }
+                                    />
+                                    <FormItemComponent
+                                        // rules={['Vui lòng nhập số lượng sản phẩm!']}
+                                        name="totalQuantity"
                                         label={<b>Số lượng sản phẩm</b>}
                                         inputField={
                                             <InputNumber
@@ -162,14 +169,17 @@ const ProductForm = () => {
                                         }
                                     />
                                     <FormItemComponent
-                                        rules={['Vui lòng nhập tên tác giả!']}
-                                        name="content"
+                                        // rules={['Vui lòng nhập tên tác giả!']}
+                                        name="author"
                                         label={<b>Tên tác giả</b>}
                                         inputField={
-                                            <InputNumber style={{ width: '100%' }} placeholder="Nhập tên tác giả" />
+                                            <SelectAuthorComponent
+                                                apiUrl="http://localhost:5243/api/authors"
+                                                placeholder="Nhập tên tác giả"
+                                            />
                                         }
                                     />
-                                    {id && (
+                                    {/* {id && (
                                         <FormItemComponent
                                             name="status"
                                             label={<b>Trạng thái</b>}
@@ -180,7 +190,7 @@ const ProductForm = () => {
                                                 </Select>
                                             }
                                         />
-                                    )}
+                                    )} */}
                                     <FormItemComponent
                                         rules={['Vui lòng nhập mô tả!']}
                                         name="description"

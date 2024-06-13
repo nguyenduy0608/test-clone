@@ -3,7 +3,7 @@ export const routerPage = {
     // public....
 
     // private....
-    home: '/home',
+    home: '/',
     detailbook: '/detailbook/:id',
     // work
     customer: '/customer',

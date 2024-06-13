@@ -16,10 +16,10 @@ const Topbar = ({ handleCallbackCollapseMobile }: { handleCallbackCollapseMobile
     const [countNoti, setCountNoti] = React.useState<any>(0);
     const dispatch = useDispatch();
     React.useEffect(() => {
-        appService.getCountNoti().then((res: any) => {
-            setCountNoti(res.data);
-            dispatch(setNotiCount(res.data));
-        });
+        // appService.getCountNoti().then((res: any) => {
+        //     setCountNoti(res.data);
+        //     dispatch(setNotiCount(res.data));
+        // });
     }, [state.callbackNoti]);
 
     return (

@@ -21,15 +21,15 @@ const PushNoti = ({ popoverRef, countNoti }: any) => {
     const [loading, setLoading] = React.useState(false);
 
     const FetchData = async () => {
-        await pushNotiService
-            .get(page)
-            .then((res: any) => {
-                setNotifications((prev: any) => (page === 1 ? res?.data : [...prev, ...res?.data]));
-                setTotal(res?.paging?.totalItem);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+        // await pushNotiService
+        //     .get(page)
+        //     .then((res: any) => {
+        //         setNotifications((prev: any) => (page === 1 ? res?.data : [...prev, ...res?.data]));
+        //         setTotal(res?.paging?.totalItem);
+        //     })
+        //     .finally(() => {
+        //         setLoading(false);
+        //     });
     };
     React.useEffect(() => {
         if (page !== 1) {

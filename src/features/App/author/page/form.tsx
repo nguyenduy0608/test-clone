@@ -5,17 +5,22 @@ import FormItemComponent from '@/components/FormComponent/FormItemComponent';
 import ModalComponent from '@/components/ModalComponent';
 import Wrapper from '@/features/Auth/Wrapper';
 import { rules } from '@/rules';
-import { Notification } from '@/utils';
+import { Notification, getRandomInteger } from '@/utils';
 import { Button, Col, DatePicker, Form, Input, Row, Select, Space } from 'antd';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { authorServices } from '../services';
+import axios from 'axios';
+import moment from 'moment';
+const apiUrl = 'http://localhost:5243/api/authors';
 
 const initialValue = {
     name: '',
     address: '',
-    phoneNumber: '',
+    genre: '',
+    status: '',
+    birthDate: '',
 };
 
 const AuthorForm = ({
@@ -37,8 +42,10 @@ const AuthorForm = ({
         if (values) {
             form.setFieldsValue({
                 name: values.name,
-                phoneNumber: values.phoneNumber,
+                birthDate: moment(values.birthDate),
                 address: values.address,
+                status: values.status,
+                genre: values.genre,
             });
         }
     }, [values]);
@@ -52,39 +59,37 @@ const AuthorForm = ({
         if (values) {
             const dataUpload = {
                 ...data,
+                id: values?.id,
+                birthDate: moment(data.birthDate),
             };
-            authorServices
-                .update(dataUpload, values?.id)
+            axios
+                .put(`${apiUrl}/${values?.id}`, dataUpload)
                 .then((res) => {
-                    if (res.status) {
-                        Notification('success', 'Cập nhật tác giả thành công');
-                        handleCloseForm();
-
-                        formReset();
-                    }
+                    Notification('success', 'Cập nhật tác giả thành công');
+                    handleCloseForm();
+                    formReset();
                 })
                 .finally(() => {
                     setLoading(false);
                 });
         } else {
             const dataUpload = {
-                // ...data,
-                name: data.name || '',
+                id: getRandomInteger(),
+                birthDate: moment(data?.birthDate),
+                ...data,
             };
-            authorServices
-                .post(dataUpload)
+            axios
+                .post(apiUrl, dataUpload)
                 .then((res) => {
                     if (res.status) {
                         Notification('success', 'Thêm tác giả thành công');
                         handleCloseForm();
-
                         formReset();
                     }
                 })
                 .finally(() => setLoading(false));
         }
     };
-
     return (
         <>
             <Wrapper loading={loading}>
@@ -99,11 +104,18 @@ const AuthorForm = ({
                                 inputField={<Input placeholder="Nhập tên tác giả" />}
                             />
                             <FormItemComponent
-                                rules={[rules.required('Vui lòng chọn ngày sinh tác giả!')]}
-                                name="name"
+                                // rules={[rules.required('Vui lòng chọn ngày sinh tác giả!')]}
+                                name="birthDate"
                                 label="Ngày sinh"
-                                normalize={(value: any) => value.trimStart()}
-                                inputField={<DatePicker style={{ width: '100%' }} placeholder="Chọn ngày sinh" />}
+                                inputField={
+                                    <DatePicker
+                                        onChange={(value) => {
+                                            setDatas(value);
+                                        }}
+                                        style={{ width: '100%' }}
+                                        placeholder="Chọn ngày sinh"
+                                    />
+                                }
                             />
 
                             <FormItemComponent
@@ -117,21 +129,20 @@ const AuthorForm = ({
                             />
                             <FormItemComponent
                                 rules={[rules.required('Vui lòng nhập số điện thoại khách hàng!')]}
-                                name="phoneNumber"
+                                name="genre"
                                 label="Thể loại truyện"
                                 normalize={(value: any) => value.trimStart()}
                                 inputField={<Input placeholder="Nhập thể loại truyện" />}
                             />
                             {values && (
                                 <FormItemComponent
-                                    rules={[rules.required('Vui lòng nhập số điện thoại khách hàng!')]}
-                                    name="phoneNumber"
+                                    rules={[rules.required('Vui lòng chọn trạng thái khách hàng!')]}
+                                    name="status"
                                     label="Trạng thái"
-                                    normalize={(value: any) => value.trimStart()}
                                     inputField={
                                         <Select placeholder="Chọn trạng thái">
-                                            <Select.Option value={0}>Hoạt động</Select.Option>
-                                            <Select.Option value={1}>Ngừng hoạt động</Select.Option>
+                                            <Select.Option value={true}>Hoạt động</Select.Option>
+                                            <Select.Option value={false}>Ngừng hoạt động</Select.Option>
                                         </Select>
                                     }
                                 />

@@ -20,51 +20,27 @@ export const columns = (page: number): ColumnsType<any> => [
 
     {
         title: 'Tên sản phẩm',
-        dataIndex: 'area',
-        render: (value) => value?.garden?.name,
+        dataIndex: 'name',
+        render: (value) => value,
     },
     {
-        title: 'Tổng số lượng',
-        dataIndex: 'area',
+        title: 'Lợi nhuận',
+        dataIndex: 'total_gain',
         align: 'center',
-        render: (value) => <Tag color="#f50">{currencyFormat(value) || 0}</Tag>,
+        render: (value) => currencyFormat(value),
     },
 
     {
-        title: 'Phân loại',
-        dataIndex: 'sid',
-        align: 'center',
-        render: (value) => value,
-    },
-    {
-        title: 'Tác giả',
-        dataIndex: 'name',
-        align: 'center',
-        render: (value) => value,
-    },
-    {
-        title: 'Tổng tiền bán được',
-        dataIndex: 'usedDayCount',
-        align: 'center',
-        render: (value) => <Tag color="success">{currencyFormat(value) || 0}</Tag>,
-    },
-    {
-        title: 'Giá nhập',
-        dataIndex: 'emptyDayCount',
-        align: 'center',
-        render: (value) => <Tag color="#f50">{currencyFormat(value) || 0}</Tag>,
-    },
-    {
-        title: 'Giá bán',
-        dataIndex: 'emptyDayRatio',
+        title: 'Chi phí',
+        dataIndex: 'total_cost',
         align: 'center',
         render: (value) => <Tag color="#f50">{currencyFormat(value) || 0}</Tag>,
     },
     {
         title: 'Tổng doanh thu',
-        dataIndex: 'emptyDayRatio',
+        dataIndex: 'total_amount',
         align: 'center',
-        render: (value) => <Tag color="#f50">{currencyFormat(value) || 0}</Tag>,
+        render: (value, record) => <Tag color="green">{currencyFormat(value) + 'VNĐ' || 0}</Tag>,
     },
 ];
 export const columnLand = (page: number, filterQuery: any): ColumnsType<any> => [

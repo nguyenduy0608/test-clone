@@ -29,7 +29,7 @@ const Filter = ({ returnFilter }: { returnFilter: (filter: any) => void }) => {
                 <Option value={2}>Ngừng hoạt động</Option>
             </DefaultSelectStyled>
 
-            <RangerPicker
+            {/* <RangerPicker
                 valueOptions={4}
                 name="dateFilter"
                 tooltipTitle="Lọc theo ngày tạo"
@@ -38,7 +38,7 @@ const Filter = ({ returnFilter }: { returnFilter: (filter: any) => void }) => {
                 }}
 
                 // defaultValue={params?.fromDate ? [moment(params?.createFrom), moment(params?.toDate)] : null}
-            />
+            /> */}
         </SpaceStyled>
     );
 };

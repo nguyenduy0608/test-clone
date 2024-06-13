@@ -24,6 +24,8 @@ import { totalResultParams } from '../components/DetailChecklistResultChart';
 import Filter from '../components/Filter';
 import { columns } from '../components/ReportCost.Config';
 import { reportcostServices } from '../services';
+import { OptionsChartUseLand } from '../Land/components/DetailChartUseLand';
+import axios from 'axios';
 
 export const formatDate = (date: any) => {
     const year = date?.getFullYear();
@@ -56,25 +58,33 @@ const ReportCostPage = () => {
     const [page, setPage] = React.useState(1);
     const width = useWindowSize();
     const [valueStatus, setValueStatus] = React.useState('');
+    const [dataCus, setDataCus] = React.useState([]);
     const [valueOptions, setValueOptions] = React.useState<string>(TimeType.MONTH);
 
     const { data, isLoading, refetch, isRefetching } = useQuery<any>(
         ['reports-expenses', page, filterQuery],
         async () => {
-            const getReportPromise = reportcostServices.get({ page, ...filterQuery });
-            const getCostPromise = reportcostServices.getCost({ page, ...filterQuery });
-            const getCostLinePromise = reportcostServices.getCostLine({ page, ...filterQuery });
-
-            const [reportData, costData, costDataLine] = await Promise.all([
-                getReportPromise,
-                getCostPromise,
-                getCostLinePromise,
-            ]);
-            return { reportData, costData, costDataLine };
+            // const getReportPromise = reportcostServices.get({ page, ...filterQuery });
+            // const getCostPromise = reportcostServices.getCost({ page, ...filterQuery });
+            // const getCostLinePromise = reportcostServices.getCostLine({ page, ...filterQuery });
+            // const [reportData, costData, costDataLine] = await Promise.all([
+            //     getReportPromise,
+            //     getCostPromise,
+            //     getCostLinePromise,
+            // ]);
+            // return { reportData, costData, costDataLine };
             // Tại đây, reportData là dữ liệu từ reportcostServices.get và costData là dữ liệu từ reportcostServices.getCost
         }
     );
-
+    React.useEffect(() => {
+        getData();
+    }, []);
+    const getData = async () => {
+        const res = await axios.get(
+            'http://localhost:5243/api/Customers/topNCustomerHaveHighestValueOfInterval?n=10&from=2022-02-02&to=2023-02-02'
+        );
+        setDataCus(res?.data);
+    };
     const returnFilter = React.useCallback(
         (filter: IFilter) => {
             setPage(1);
@@ -169,34 +179,35 @@ const ReportCostPage = () => {
     return (
         <>
             <TopBar
-                extra={
-                    <Button
-                        icon={<VerticalAlignBottomOutlined />}
-                        style={{ backgroundColor: '#119211', color: 'white' }}
-                        key="add"
-                        className="gx-mb-0"
-                        onClick={handleExportExcel}
-                    >
-                        Xuất Excel
-                    </Button>
-                }
+                // extra={
+                //     <Button
+                //         icon={<VerticalAlignBottomOutlined />}
+                //         style={{ backgroundColor: '#119211', color: 'white' }}
+                //         key="add"
+                //         className="gx-mb-0"
+                //         onClick={handleExportExcel}
+                //     >
+                //         Xuất Excel
+                //     </Button>
+                // }
                 title="Báo cáo khách hàng"
             />
 
             <Container>
-                <CardComponent
-                    bodyStyle={{ border: RADIUS }}
-                    title={
-                        <Filter
-                            initialFilterQuery={initialFilterQuery}
-                            setValueStatus={setValueStatus}
-                            returnFilter={returnFilter}
-                            valueOptions={valueOptions}
-                            setValueOptions={setValueOptions}
-                            key="filter"
-                        />
-                    }
-                >
+                <CardComponent bodyStyle={{ border: RADIUS }} title={'Top 10 khách hàng trong năm'}>
+                    <Row justify="start" style={{ width: '100%' }}>
+                        <Col span={18}>
+                            <HighchartsReact
+                                highcharts={Highcharts}
+                                options={OptionsChartUseLand({
+                                    dataName: 0,
+                                    dataX1: [],
+                                    dataX2: [],
+                                })}
+                                containerProps={{ style: { height: '400px', width: '100%' } }}
+                            />
+                        </Col>
+                    </Row>
                     <TableComponent
                         showTotalResult
                         loading={isRefetching || isLoading}
@@ -204,9 +215,10 @@ const ReportCostPage = () => {
                         rowSelect={false}
                         onChangePage={(_page) => setPage(_page)}
                         // expandedRowRender={rowRender}
-                        dataSource={data?.reportData?.data?.foundHarvests || []}
+                        dataSource={dataCus}
                         columns={[...columns(page)]}
-                        total={data?.reportData && data?.reportData?.paging?.totalItem}
+                        // total={data?.reportData && data?.reportData?.paging?.totalItem}
+                        total={10}
                     />
                 </CardComponent>
             </Container>
@@ -233,3 +245,89 @@ const ColStyled = styled(Col)<{ color?: string; index?: number }>`
     ${(props: any) => props?.index === 3 && 'background: linear-gradient(33deg, #54E38E, #41C7AF);'};
     ${(props: any) => props?.index === 4 && 'background: linear-gradient(33deg, #E16E93, #9D2E7D);'};
 `;
+const customers = [
+    {
+        name: 'Nguyễn Văn A',
+        phone: '0123456789',
+        address: '123 Đường A, Quận 1, TP.HCM',
+        purchaseCount: 5,
+        totalAmount: 1500000,
+        lastPurchaseDate: '2024-05-02',
+    },
+    {
+        name: 'Trần Thị B',
+        phone: '0987654321',
+        address: '456 Đường B, Quận 2, TP.HCM',
+        purchaseCount: 3,
+        totalAmount: 850000,
+        lastPurchaseDate: '2024-05-05',
+    },
+    {
+        name: 'Lê Văn C',
+        phone: '0345678901',
+        address: '789 Đường C, Quận 3, TP.HCM',
+        purchaseCount: 8,
+        totalAmount: 2400000,
+        lastPurchaseDate: '2024-05-08',
+    },
+    {
+        name: 'Phạm Thị D',
+        phone: '0456789012',
+        address: '101 Đường D, Quận 4, TP.HCM',
+        purchaseCount: 2,
+        totalAmount: 500000,
+        lastPurchaseDate: '2024-05-10',
+    },
+    {
+        name: 'Hoàng Văn E',
+        phone: '0567890123',
+        address: '202 Đường E, Quận 5, TP.HCM',
+        purchaseCount: 6,
+        totalAmount: 1800000,
+        lastPurchaseDate: '2024-05-15',
+    },
+    {
+        name: 'Phan Thị F',
+        phone: '0678901234',
+        address: '303 Đường F, Quận 6, TP.HCM',
+        purchaseCount: 4,
+        totalAmount: 1200000,
+        lastPurchaseDate: '2024-05-18',
+    },
+    {
+        name: 'Đỗ Văn G',
+        phone: '0789012345',
+        address: '404 Đường G, Quận 7, TP.HCM',
+        purchaseCount: 7,
+        totalAmount: 2100000,
+        lastPurchaseDate: '2024-05-20',
+    },
+    {
+        name: 'Bùi Thị H',
+        phone: '0890123456',
+        address: '505 Đường H, Quận 8, TP.HCM',
+        purchaseCount: 5,
+        totalAmount: 1600000,
+        lastPurchaseDate: '2024-05-22',
+    },
+    {
+        name: 'Vũ Văn I',
+        phone: '0901234567',
+        address: '606 Đường I, Quận 9, TP.HCM',
+        purchaseCount: 3,
+        totalAmount: 900000,
+        lastPurchaseDate: '2024-05-23',
+    },
+    {
+        name: 'Ngô Thị J',
+        phone: '0912345678',
+        address: '707 Đường J, Quận 10, TP.HCM',
+        purchaseCount: 6,
+        totalAmount: 2000000,
+        lastPurchaseDate: '2024-05-23',
+    },
+];
+
+console.log(customers);
+
+console.log(customers);

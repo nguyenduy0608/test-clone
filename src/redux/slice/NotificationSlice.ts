@@ -3,9 +3,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const getListPersonalSupplies = createAsyncThunk('GetListPersonalSupplies', async () => {
     // - Gọi api -> lấy dữ liệu trả về -> cập nhật state
-    const res = await appService.getCountNoti();
-
-    return res?.data;
+    // const res = await appService.getCountNoti();
+    // return res?.data;
 });
 
 const checklistSlice = createSlice({

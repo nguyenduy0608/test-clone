@@ -9,14 +9,13 @@ interface PointFormatterContext {
 interface FormatterContext {
     value: number;
 }
-export const OptionsChartUseLand = ({ dataName, dataX1, dataX2 }: any) => {
-    console.log('🚀 ~ OptionsChartUseLand ~ dataX2:', dataX2);
+export const OptionsChartTongthu = ({ dataName, dataX1, dataX2 }: any) => {
     return {
         chart: {
             type: 'spline',
         },
         title: {
-            text: '<span style="font-size: 20px; ">Thống kê khách hàng</span>',
+            text: '<span style="font-size: 20px; ">Tổng thu</span>',
             align: 'center',
         },
         subtitle: {},
@@ -36,7 +35,7 @@ export const OptionsChartUseLand = ({ dataName, dataX1, dataX2 }: any) => {
         },
         yAxis: {
             title: {
-                text: 'Số lượng',
+                text: 'Số tiền',
                 style: {
                     fontSize: '14px',
                 },
@@ -75,11 +74,11 @@ export const OptionsChartUseLand = ({ dataName, dataX1, dataX2 }: any) => {
         },
         series: [
             {
-                name: 'Tháng',
+                name: 'Ngày',
                 marker: {
                     symbol: 'diamond',
                 },
-                data: quantity,
+                data: dataX2,
                 color: '#00e887',
                 dataLabels: {
                     style: {
@@ -104,4 +103,4 @@ const date = [
     'Tháng 11',
     'Tháng 12',
 ];
-const quantity = [1, 12, 4, 10, 3, 15, 13, 10, 4, 3, 5, 10];
+const quantity = [1, 12, 4, 10, 3, 15, 13, 10, 4, 6, 23, 5];

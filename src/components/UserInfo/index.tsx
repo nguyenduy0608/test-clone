@@ -30,10 +30,10 @@ const UserInfo = () => {
     const [form] = Form.useForm();
 
     React.useEffect(() => {
-        appService.getCountNoti().then((res: any) => {
-            setCountNoti(res.data);
-            dispatch(setNotiCount(res.data));
-        });
+        // appService.getCountNoti().then((res: any) => {
+        //     setCountNoti(res.data);
+        //     dispatch(setNotiCount(res.data));
+        // });
     }, [state.callbackNoti]);
     const userMenuOptions = (
         <ul className="gx-user-popover">

@@ -12,6 +12,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { customerServices } from '../services';
 import axios from 'axios';
+import SelectComponent from '@/components/SelectComponent';
+import SelectAuthorComponent from '../../product/components/SelectAuthor';
 
 const apiUrl = 'http://localhost:5243/api/Customers';
 
@@ -21,7 +23,7 @@ const initialValue = {
     phoneNumber: '',
 };
 
-const CustomerForm = ({
+const BuyForm = ({
     modalVisible,
     handleCloseForm,
     values,
@@ -30,20 +32,13 @@ const CustomerForm = ({
     handleCloseForm?: any;
     values?: any;
 }) => {
+    console.log('🚀 ~ values:', values);
     const [form] = Form.useForm();
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = React.useState(false);
     const [datas, setDatas] = React.useState<any>();
-    React.useEffect(() => {
-        if (values) {
-            form.setFieldsValue({
-                name: values.name,
-                phoneNumber: values.phoneNumber,
-                address: values.address,
-            });
-        }
-    }, [values]);
+
     const formReset = () => {
         form.setFieldsValue(initialValue);
     };
@@ -51,71 +46,51 @@ const CustomerForm = ({
     const handleSubmit = (data: any) => {
         setLoading(true);
 
-        if (values) {
-            const dataUpload = {
-                ...data,
-            };
-            axios
-                .put(`${apiUrl}/${values?.id}`, dataUpload)
-                .then((res) => {
-                    Notification('success', 'Cập nhật khách hàng thành công');
-                    handleCloseForm();
-                    formReset();
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-        } else {
-            const dataUpload = {
-                phoneNumber: data?.phoneNumber,
-                name: data?.name || '',
-                address: data?.address,
-            };
-            axios
-                .post(apiUrl, dataUpload)
-                .then((res) => {
-                    if (res.status) {
-                        Notification('success', 'Thêm khách hàng thành công');
-                        handleCloseForm();
-                        formReset();
-                    }
-                })
-                .finally(() => setLoading(false));
-        }
+        const dataUpload = {
+            ...data,
+        };
+        console.log('🚀 ~ handleSubmit ~ dataUpload:', dataUpload);
+        axios
+            .put(
+                `http://localhost:5243/api/Cart/add-product-to-cart?cartId=${dataUpload?.name?.value}&productId=${dataUpload?.phoneNumber?.value}`
+            )
+            .then((res) => {
+                Notification('success', 'Mua sản phẩm thành công');
+                handleCloseForm();
+                formReset();
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     return (
         <>
             <Wrapper loading={loading}>
-                <ModalComponent
-                    title={values ? 'Sửa khách hàng' : 'Thêm khách hàng'}
-                    modalVisible={modalVisible}
-                    width={600}
-                >
+                <ModalComponent title={'Thêm khách hàng'} modalVisible={modalVisible} width={600}>
                     <FormComponent form={form} onSubmit={handleSubmit}>
                         <Row style={{ flexDirection: 'row' }} gutter={[20, 0]}>
                             <FormItemComponent
                                 rules={[rules.required('Vui lòng nhập tên khách hàng!')]}
                                 name="name"
-                                label="Tên khách hàng"
-                                normalize={(value: any) => value.trimStart()}
-                                inputField={<Input placeholder="Nhập tên khách hàng" />}
+                                label="Giỏ hàng"
+                                inputField={
+                                    <SelectAuthorComponent
+                                        apiUrl={`http://localhost:5243/api/Cart/user/${values?.id}`}
+                                        placeholder="Chọn"
+                                    />
+                                }
                             />
 
                             <FormItemComponent
                                 rules={[rules.required('Vui lòng nhập số điện thoại khách hàng!')]}
                                 name="phoneNumber"
-                                label="Số điện thoại"
-                                normalize={(value: any) => value.trimStart()}
-                                inputField={<Input placeholder="Nhập số điện thoại khách hàng" />}
-                            />
-                            <FormItemComponent
-                                rules={[rules.required('Vui lòng nhập địa chỉ khách hàng!')]}
-                                name="address"
-                                label="Địa chỉ"
-                                normalize={(value: any) => value.trimStart()}
+                                label="Sản phẩm"
                                 inputField={
-                                    <Input.TextArea style={{ height: 200 }} placeholder="Nhập địa chỉ khách hàng" />
+                                    <SelectAuthorComponent
+                                        apiUrl={`http://localhost:5243/api/Products`}
+                                        placeholder="Chọn"
+                                    />
                                 }
                             />
                         </Row>
@@ -149,4 +124,4 @@ const ParentContainer = styled.div`
 const ColWeek = styled(Col)`
     padding-bottom: 6px;
 `;
-export default CustomerForm;
+export default BuyForm;

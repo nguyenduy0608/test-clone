@@ -87,6 +87,7 @@ const AccountFormPage = ({
                     dateOfBirth: data?.dateOfBirth ? dayjs(data?.dateOfBirth).format('YYYY-MM-DD') : null,
                     gender: data?.gender ? data?.gender : null,
                     email: data?.email ? data?.email : undefined,
+                    type: 'admin',
                 });
                 if (res.status) {
                     Notification('success', 'Cập nhật tài khoản thành công');
@@ -99,6 +100,7 @@ const AccountFormPage = ({
                     dateOfBirth: data?.dateOfBirth ? dayjs(data?.dateOfBirth).format('YYYY-MM-DD') : null,
                     avatar: file || undefined,
                     status: true,
+                    type: 'admin',
                     phoneNumber: data?.phoneNumber,
                     gardenId: data?.gardenId?.value || data?.gardenId,
                     gender: data?.gender ? data?.gender : null,

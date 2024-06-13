@@ -11,21 +11,24 @@ import InfoLogin from '../components/InfoLogin';
 const LoginPage = () => {
     const [loading, setLoading] = React.useState(false);
     const [form] = Form.useForm();
+
     const handleSubmit = async (value: { phone_number: string; password: string }) => {
         setLoading(true);
-        authService.login(value).then((res: any) => {
-            if (res.status) {
-                LocalStorage.setToken(res?.data?.accessToken);
-                Notification('success', 'Đăng nhập thành công');
-                wait(1500).then(() => {
-                    window.location.reload();
-                    setLoading(false);
-                });
-            } else {
-                // Notification('warning', 'Đăng nhập thất bại');
-                setLoading(false);
-            }
+        // authService.login(value).then((res: any) => {
+        //     if (res.status) {
+        //         LocalStorage.setToken(res?.data?.accessToken);
+        Notification('success', 'Đăng nhập thành công');
+        LocalStorage.setToken('111111111111111111');
+        wait(1500).then(() => {
+            window.location.reload();
+            setLoading(false);
         });
+
+        //     } else {
+        //         // Notification('warning', 'Đăng nhập thất bại');
+        //         setLoading(false);
+        //     }
+        // });
     };
 
     return (

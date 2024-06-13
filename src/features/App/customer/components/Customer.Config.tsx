@@ -42,38 +42,30 @@ export const columns = (page: number): ColumnsType<DataType> => [
         title: 'Tên khách hàng',
         dataIndex: 'name',
     },
+
+    {
+        title: 'Số điện thoại',
+        dataIndex: 'phoneNumber',
+        align: 'center',
+        render: (value, record, index) => value,
+    },
     {
         title: 'Địa chỉ',
         dataIndex: 'address',
     },
 
     {
-        title: 'Số điện thoại',
-        dataIndex: 'phoneNumber',
-        align: 'center',
-        render: (value, record, index) =>
-            record?.expectedEndTime ? (
-                <p>
-                    {removeSecondsFromTime(record?.expectedStartTime) +
-                        '-' +
-                        removeSecondsFromTime(record?.expectedEndTime)}
-                </p>
-            ) : (
-                <p>{removeSecondsFromTime(record?.expectedStartTime)}</p>
-            ),
-    },
-    {
         title: 'Trạng thái',
         dataIndex: 'status',
         // align: 'center',
         render: (value, record, index) => {
-            return value === 1 ? <Tag color="success">Đang hoạt động </Tag> : <Tag color="red">Ngừng hoạt động</Tag>;
+            return value === true ? <Tag color="success">Đang hoạt động </Tag> : <Tag color="red">Ngừng hoạt động</Tag>;
         },
     },
-    {
-        title: 'Ngày tạo',
-        dataIndex: 'createdByUser',
-        align: 'center',
-        render: (value) => momentToStringDate(value),
-    },
+    // {
+    //     title: 'Ngày tạo',
+    //     dataIndex: 'createdByUser',
+    //     align: 'center',
+    //     render: (value) => momentToStringDate(value),
+    // },
 ];

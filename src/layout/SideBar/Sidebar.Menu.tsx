@@ -2,11 +2,11 @@ import IconAntd from '@/components/IconAntd';
 import { BsCashCoin, BsFlower3 } from 'react-icons/bs';
 
 export const itemsAdmin: any = [
-    {
-        label: 'Trang chủ',
-        key: 'home',
-        icon: <IconAntd icon="HomeOutlined" />,
-    },
+    // {
+    //     label: 'Trang chủ',
+    //     key: '',
+    //     icon: <IconAntd icon="HomeOutlined" />,
+    // },
     {
         label: 'Báo cáo',
         // key: '/',

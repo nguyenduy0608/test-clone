@@ -36,13 +36,13 @@ function App() {
 
     React.useLayoutEffect(() => {
         if (LocalStorage.getToken()) {
-            authService.info().then((res) => {
-                setRole(res.data?.type);
-                dispatch({
-                    type: SET_INFO,
-                    payload: { ...res?.data, role: 1 },
-                });
+            // authService.info().then((res) => {
+            setRole('admin');
+            dispatch({
+                type: SET_INFO,
+                payload: { role: 1 },
             });
+            // });
         }
         // if (LocalStorage.getToken()) {
         //     ConfigService.get({page: 1, limit: 100}).then((res) => {

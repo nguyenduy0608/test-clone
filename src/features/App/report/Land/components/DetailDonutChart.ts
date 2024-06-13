@@ -105,12 +105,12 @@ export const OptionsDonutChart = ({ data }: any) => {
                 data: [
                     {
                         name: 'Tồn kho',
-                        y: data?.percentageEmptyDays,
+                        y: data?.percentageEmptyDays || 3,
                     },
 
                     {
                         name: 'Bán chạy',
-                        y: data?.percentagePlantingDays,
+                        y: data?.percentagePlantingDays || 7,
                     },
                 ],
                 colors: ['#f50', '#00e887'],

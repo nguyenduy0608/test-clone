@@ -39,7 +39,7 @@ const MainPage = ({ role }: { role: string }) => {
             setLogged(true);
             if (pathname === routerPage.register || pathname === routerPage.login) {
                 switchSidebar(role);
-                navigate('/');
+                navigate('/home');
             }
         } else {
             switch (pathname) {

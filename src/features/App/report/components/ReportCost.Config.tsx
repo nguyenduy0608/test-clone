@@ -16,40 +16,30 @@ export const columns = (page: number): ColumnsType<any> => [
     },
     {
         title: 'Tên khách hàng',
-        dataIndex: 'season',
-        render: (value) => value?.name,
-    },
-    {
-        title: 'Số điện thoại',
-        dataIndex: 'phoneNumber',
-        align: 'center',
+        dataIndex: 'name',
         render: (value) => value,
-    },
-    {
-        title: 'Địa chỉ',
-        dataIndex: 'season',
-        render: (value) => value,
-    },
-    {
-        title: 'Số lần mua',
-        dataIndex: 'season',
-        align: 'center',
-        render: (value) => currencyFormat(value?.usableArea),
     },
 
     {
-        title: 'Tổng tiền mua',
-        dataIndex: 'season',
+        title: 'Số đơn hàng',
+        dataIndex: 'quantity',
         align: 'center',
-        render: (value) => currencyFormat(value?.expectedQuantity),
+        render: (value) => currencyFormat(value),
     },
 
     {
-        title: 'Ngày mua gần nhất',
-        dataIndex: 'turns',
+        title: 'Doanh thu',
+        dataIndex: 'totalPrice',
+        align: 'center',
+        render: (value) => currencyFormat(value),
+    },
+
+    {
+        title: 'Lợi nhuận',
+        dataIndex: 'originalPrice',
         align: 'center',
         render: (value, record) => {
-            return momentToStringDate(value);
+            return currencyFormat(value);
         },
     },
 ];

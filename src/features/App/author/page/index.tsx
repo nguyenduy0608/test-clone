@@ -6,7 +6,7 @@ import { routerPage } from '@/config/contants.routes';
 import useCallContext from '@/hooks/useCallContext';
 import Container from '@/layout/Container';
 import { IFilter } from '@/types';
-import { Button, Form, Row } from 'antd';
+import { Button, Form, Popconfirm, Row } from 'antd';
 import React from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -14,6 +14,8 @@ import Filter from '../components/Filter';
 import { columns } from '../components/Author.Config';
 import { authorServices } from '../services';
 import AuthorForm from './form';
+import axios from 'axios';
+import { Notification } from '@/utils';
 const initialFilterQuery = {
     task_id: undefined,
 };
@@ -29,25 +31,26 @@ const AuthorPage = () => {
     const [isNameWork, setIsNameWork] = React.useState<string>('');
     const location = useLocation();
     const { state } = useCallContext();
+    const apiUrl = 'http://localhost:5243/api/authors';
 
-    const { data, isLoading, refetch, isRefetching } = useQuery<any>(['customers', page, filterQuery, location], () =>
-        authorServices.get({ page, ...filterQuery })
-    );
-    React.useEffect(() => {
-        refetch();
-    }, [state?.callbackNoti]);
+    const { data, isLoading, refetch, isRefetching } = useQuery('customers', fetchCustomers);
 
-    React.useEffect(() => {
-        if (location?.state?.page) {
-            setPage(location?.state?.page);
+    async function fetchCustomers() {
+        try {
+            const response = await axios.get(apiUrl, {
+                // headers: {
+                //     accept: 'text/plain',
+                // },
+                // params: {
+                //     page,
+                //     ...filterQuery,
+                // },
+            });
+            return response.data;
+        } catch (error) {
+            throw new Error('Failed to fetch customers');
         }
-        setIsNameWork(location?.state?.isNameWork || '');
-        if (location?.state?.isFromNoti) {
-            setKeyExpan(location?.state?.isFromNoti);
-            setPage(1);
-            setFilterQuery({ task_id: location?.state?.isFromNoti });
-        }
-    }, [location]);
+    }
 
     const returnFilter = React.useCallback(
         (filter: IFilter) => {
@@ -63,9 +66,22 @@ const AuthorPage = () => {
     };
     const handleCloseForm = () => {
         setModalVisible(false);
+        refetch();
         setValues(null);
     };
+    const deleteAuthorById = async (id: number) => {
+        const url = `${apiUrl}/${id}`;
 
+        try {
+            const response = await axios.delete(url);
+
+            Notification('success', 'Xóa tác giả thành công');
+            refetch();
+        } catch (error) {
+            console.error('Error deleting customer:');
+            throw error;
+        }
+    };
     return (
         <>
             <TopBar
@@ -84,7 +100,9 @@ const AuthorPage = () => {
                 title="Tác giả"
             />
             <Container>
-                <CardComponent title={<Filter returnFilter={returnFilter} key="filter" />}>
+                <CardComponent
+                // title={<Filter returnFilter={returnFilter} key="filter" />}
+                >
                     <TableComponent
                         showTotalResult
                         expandedRowKeys={keyExpan}
@@ -93,8 +111,8 @@ const AuthorPage = () => {
                         page={page}
                         rowSelect={false}
                         onChangePage={(_page) => setPage(_page)}
-                        dataSource={data?.data}
-                        total={data && data?.paging?.totalItem}
+                        dataSource={data}
+                        total={data && data.length}
                         columns={[
                             ...columns(page),
 
@@ -110,16 +128,24 @@ const AuthorPage = () => {
                                             style={{ border: 'none' }}
                                             onClick={() => handleShowModal(record)}
                                         />
-                                        <Button
-                                            style={{
-                                                border: 'solid 0px #d9d9d9',
+                                        <Popconfirm
+                                            cancelButtonProps={{
+                                                style: {
+                                                    margin: 0,
+                                                },
                                             }}
-                                            icon={<IconAntd icon="DeleteOutlined" />}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                // handleShowModal(record);
-                                            }}
-                                        ></Button>
+                                            title={<strong>{`Bạn chắc chắn muốn xoá tác giả này?`}</strong>}
+                                            onConfirm={() => deleteAuthorById(record?.id)}
+                                        >
+                                            <Button
+                                                style={{ color: 'red', border: 'none' }}
+                                                icon={<IconAntd size="20px" icon="DeleteOutlined" />}
+                                                key="delete"
+                                                danger
+                                                className="gx-mb-0"
+                                                type="dashed"
+                                            ></Button>
+                                        </Popconfirm>
                                     </Row>
                                 ),
                             },

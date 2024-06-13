@@ -1,34 +1,19 @@
 import CardComponent from '@/components/CardComponent';
-import TopBar from '@/components/TopBar';
-import Container from '@/layout/Container';
-import { Button, Form, Input, Modal, Row, Space, Switch, Tag, message } from 'antd';
-import React from 'react';
-import Filter from '../components/Filter';
-import TableComponent from '@/components/TableComponent';
-import { IFilter } from '@/types';
-import { DataType, columns } from '../components/Work.Config';
-import Description from '../components/Description';
-import { routerPage } from '@/config/contants.routes';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { workService } from '../services';
-import { useQuery } from 'react-query';
-import {
-    ClockCircleOutlined,
-    CheckCircleOutlined,
-    CloseCircleOutlined,
-    LoadingOutlined,
-    StopOutlined,
-} from '@ant-design/icons';
 import IconAntd from '@/components/IconAntd';
-import { Notification } from '@/utils';
-import { STATUS_WORK } from '@/contants';
-import FormComponent from '@/components/FormComponent';
-import FormItemComponent from '@/components/FormComponent/FormItemComponent';
-import SaveButton from '@/components/Button/Save.Button';
-import ModalComponent from '@/components/ModalComponent';
-import { rules } from '@/rules';
+import TableComponent from '@/components/TableComponent';
+import TopBar from '@/components/TopBar';
+import { routerPage } from '@/config/contants.routes';
 import useCallContext from '@/hooks/useCallContext';
+import Container from '@/layout/Container';
+import { IFilter } from '@/types';
+import { Notification } from '@/utils';
+import { Button, Form, Popconfirm, Row } from 'antd';
 import axios from 'axios';
+import React from 'react';
+import { useQuery } from 'react-query';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Filter from '../components/Filter';
+import { columns } from '../components/Work.Config';
 const initialFilterQuery = {
     task_id: undefined,
 };
@@ -46,16 +31,12 @@ const ProductPage = () => {
     const initialValue = {
         reason_for_cancellation: '',
     };
-    const apiUrl = 'https://b121-2405-4802-1cae-d580-e0cf-60e4-dc25-b862.ngrok-free.app/api/Products';
+    const apiUrl = 'http://localhost:5243/api/Products';
 
     const { data, isLoading, refetch, isRefetching } = useQuery<any>(['products', page, filterQuery, location], () =>
         axios.get(apiUrl, { params: { page, ...filterQuery } })
     );
-    console.log('🚀 ~ ProductPage ~ data:', data);
 
-    const formReset = () => {
-        form.setFieldsValue(initialValue);
-    };
     const returnFilter = React.useCallback(
         (filter: IFilter) => {
             setPage(1);
@@ -64,15 +45,19 @@ const ProductPage = () => {
         [filterQuery]
     );
 
-    // const rowRender = (record: DataType, index: number, indent: number, expanded: any) => {
-    //     const row = document.querySelector(`[data-row-key="${record?.id}"]`);
-    //     if (expanded) {
-    //         row?.classList.add('rowTableSelect');
-    //     } else {
-    //         row?.classList.remove('rowTableSelect');
-    //     }
-    //     return <Description record={record} refetch={refetch} expanded={expanded} />;
-    // };
+    const deleteProductById = async (id: number) => {
+        const url = `${apiUrl}/${id}`;
+
+        try {
+            const response = await axios.delete(url);
+
+            Notification('success', 'Xóa sản phẩm thành công');
+            refetch();
+        } catch (error) {
+            console.error('Error deleting customer:');
+            throw error;
+        }
+    };
     return (
         <>
             <TopBar
@@ -91,7 +76,9 @@ const ProductPage = () => {
                 title="Sản phẩm"
             />
             <Container>
-                <CardComponent title={<Filter returnFilter={returnFilter} key="filter" />}>
+                <CardComponent
+                // title={<Filter returnFilter={returnFilter} key="filter" />}
+                >
                     <TableComponent
                         showTotalResult
                         expandedRowKeys={keyExpan}
@@ -102,7 +89,7 @@ const ProductPage = () => {
                         onChangePage={(_page) => setPage(_page)}
                         // expandedRowRender={rowRender}
                         dataSource={data?.data}
-                        total={data && data?.paging?.totalItem}
+                        total={data && data?.data.length}
                         columns={[
                             ...columns(page),
 
@@ -126,13 +113,24 @@ const ProductPage = () => {
                                                 });
                                             }}
                                         />
-                                        <Button
-                                            icon={<IconAntd icon="DeleteOutlined" />}
-                                            style={{
-                                                border: 'solid 0px #d9d9d9',
+                                        <Popconfirm
+                                            cancelButtonProps={{
+                                                style: {
+                                                    margin: 0,
+                                                },
                                             }}
-                                            onClick={(e) => {}}
-                                        ></Button>
+                                            title={<strong>{`Bạn chắc chắn muốn xoá sản phẩm này?`}</strong>}
+                                            onConfirm={() => deleteProductById(record?.id)}
+                                        >
+                                            <Button
+                                                style={{ color: 'red', border: 'none' }}
+                                                icon={<IconAntd size="20px" icon="DeleteOutlined" />}
+                                                key="delete"
+                                                danger
+                                                className="gx-mb-0"
+                                                type="dashed"
+                                            ></Button>
+                                        </Popconfirm>
                                     </Row>
                                 ),
                             },

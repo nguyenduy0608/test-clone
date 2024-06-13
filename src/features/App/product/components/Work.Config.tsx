@@ -29,6 +29,13 @@ export interface DataType {
 
     exactDates?: any;
 }
+const categoryMap = {
+    1: 'Truyện trinh thám',
+    2: 'Truyện kinh dị',
+    3: 'Truyện hành động',
+    4: 'Truyện hài kịch',
+    5: 'Truyện tình cảm',
+};
 
 export const columns = (page: number): ColumnsType<any> => [
     {
@@ -46,32 +53,48 @@ export const columns = (page: number): ColumnsType<any> => [
         title: 'Danh mục',
         dataIndex: 'category',
         align: 'center',
+        render: (value) => categoryMap[value],
     },
-    {
-        title: 'Phân loại',
-        dataIndex: 'status',
-        align: 'center',
-        render: (value) => (value === '' ? <Tag color="success">Bán chạy</Tag> : <Tag color="red">Tồn kho</Tag>),
-    },
+    // {
+    //     title: 'Phân loại',
+    //     dataIndex: 'status',
+    //     align: 'center',
+    //     render: (value) => (value === '' ? <Tag color="success">Bán chạy</Tag> : <Tag color="red">Tồn kho</Tag>),
+    // },
     {
         title: 'Tên tác giả',
-        dataIndex: 'name',
+        dataIndex: 'authorobj',
+        render: (value) => value?.name,
+    },
+    {
+        title: 'Giá nhập',
+        dataIndex: 'originalPrice',
+        align: 'center',
+        render: (value) => currencyFormat(value) + ' đ',
     },
     {
         title: 'Đơn giá',
-        dataIndex: '',
+        dataIndex: 'salePrice',
         align: 'center',
+        render: (value) => currencyFormat(value) + ' đ',
     },
     {
-        title: 'Số lượng',
-        dataIndex: '',
-        // align: 'center',
+        title: 'Số lượng bán ra',
+        dataIndex: 'soldQuantity',
+        align: 'center',
+        render: (value) => 0,
     },
     {
-        title: 'Trạng thái',
-        dataIndex: 'status',
+        title: 'Số lượng còn lại',
+        dataIndex: 'remainingQuantity',
         align: 'center',
-        render: (value) =>
-            value === '' ? <Tag color="success">Đang hoạt động</Tag> : <Tag color="red">Ngừng hoạt động</Tag>,
+        render: (value, record) => currencyFormat(record.totalQuantity),
     },
+    // {
+    //     title: 'Trạng thái',
+    //     dataIndex: 'status',
+    //     align: 'center',
+    //     render: (value) =>
+    //         value === '' ? <Tag color="success">Đang hoạt động</Tag> : <Tag color="red">Ngừng hoạt động</Tag>,
+    // },
 ];

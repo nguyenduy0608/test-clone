@@ -49,31 +49,22 @@ export const columns = (page: number): ColumnsType<DataType> => [
 
     {
         title: 'Ngày sinh',
-        dataIndex: 'phoneNumber',
+        dataIndex: 'birthDate',
         align: 'center',
-        render: (value, record, index) =>
-            record?.expectedEndTime ? (
-                <p>
-                    {removeSecondsFromTime(record?.expectedStartTime) +
-                        '-' +
-                        removeSecondsFromTime(record?.expectedEndTime)}
-                </p>
-            ) : (
-                <p>{removeSecondsFromTime(record?.expectedStartTime)}</p>
-            ),
+        render: (value, record, index) => momentToStringDate(value),
     },
     {
         title: 'Trạng thái',
         dataIndex: 'status',
         // align: 'center',
         render: (value, record, index) => {
-            return value === 1 ? <Tag color="success">Đang hoạt động </Tag> : <Tag color="red">Ngừng hoạt động</Tag>;
+            return value === true ? <Tag color="success">Đang hoạt động </Tag> : <Tag color="red">Ngừng hoạt động</Tag>;
         },
     },
     {
         title: 'Thể loại truyện',
-        dataIndex: 'createdByUser',
+        dataIndex: 'genre',
         align: 'center',
-        render: (value) => momentToStringDate(value),
+        render: (value) => value,
     },
 ];

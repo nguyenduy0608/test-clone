@@ -8,8 +8,8 @@ import styled from 'styled-components';
 moment.locale('vi');
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const startOfWeek = moment().startOf('isoWeek').format('YYYY-MM-DD');
-const endOfWeek = moment().endOf('isoWeek').format('YYYY-MM-DD');
+const startOfWeek = moment().startOf('month').format('YYYY-MM-DD');
+const endOfWeek = moment().endOf('month').format('YYYY-MM-DD');
 
 const Filter = ({
     setValueStatus,
@@ -35,19 +35,19 @@ const Filter = ({
 
     return (
         <SpaceStyled size="middle" wrap style={{ width: '100%' }}>
-            <SearchInput
+            {/* <SearchInput
                 onChangeSearch={(search) => returnFilter({ search })}
                 placeholderSearch="Nhập tên/SĐT khách hàng"
-            />
+            /> */}
 
-            <RangePicker
+            {/* <RangePicker
                 name="dateFilter"
                 format="DD-MM-YYYY"
                 style={{ width: '100%' }}
                 onChange={onChangeDate}
                 allowClear={false}
                 defaultValue={[moment(startOfWeek, 'YYYY-MM-DD'), moment(endOfWeek, 'YYYY-MM-DD')]}
-            />
+            /> */}
         </SpaceStyled>
     );
 };
