@@ -9,13 +9,14 @@ import { IFilter } from '@/types';
 import { Notification, momentToStringDate } from '@/utils';
 import { EditOutlined } from '@ant-design/icons';
 import { Avatar, Button, List, Popconfirm, Tag } from 'antd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Filter from '../components/Filter';
 import { documentService } from '../services';
 import TableComponent from '@/components/TableComponent';
 import { columns } from '../components/Document.Config';
+import axios from 'axios';
 const initialFilterQuery = {};
 const DocumentPage = () => {
     const [filterQuery, setFilterQuery] = React.useState(initialFilterQuery);
@@ -23,8 +24,9 @@ const DocumentPage = () => {
     const navigator = useNavigate();
     const location = useLocation();
     const { data, isLoading, refetch, isRefetching } = useQuery<any>(['document', page, filterQuery], () =>
-        documentService.get({ page, ...filterQuery })
+        axios.get('http://localhost:5243/api/Cart/getUnpaidCartsByUserId?userId=1')
     );
+    console.log('🚀 ~ DocumentPage ~ data:', data);
 
     const returnFilter = React.useCallback(
         (filter: IFilter) => {
@@ -59,10 +61,10 @@ const DocumentPage = () => {
                         Thêm mới
                     </Button>
                 }
-                title="Tài liệu kỹ thuật"
+                title="Đơn hàng"
             />
             <Container>
-                <CardComponent title={<Filter returnFilter={returnFilter} key="filter" />}>
+                <CardComponent>
                     <TableComponent
                         showTotalResult
                         loading={isRefetching || isLoading}
@@ -80,18 +82,22 @@ const DocumentPage = () => {
                                 render: (value, record: any, index) => (
                                     <Button
                                         type="link"
-                                        icon={<IconAntd icon="EditOutlined" />}
+                                        icon={<IconAntd icon="SelectOutlined" />}
                                         style={{ border: 'none' }}
-                                        onClick={() => {
-                                            navigator(`/document/form/${record?.id}`, {
-                                                state: { ...filterQuery, page, prevUrl: location.pathname },
-                                            });
+                                        onClick={async () => {
+                                            const res = await axios.post(
+                                                `http://localhost:5243/api/Cart/update-Cart-Status?cartId=${record?.id}&status=dathanhtoan`
+                                            );
+                                            if (res.status) {
+                                                refetch();
+                                                Notification('success', `Chấp nhận đơn hàng ${record?.id} thành công`);
+                                            }
                                         }}
                                     />
                                 ),
                             },
                         ]}
-                        total={data && data?.paging?.totalItem}
+                        total={data && data?.data?.length}
                     />
                 </CardComponent>
             </Container>

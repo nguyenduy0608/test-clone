@@ -48,10 +48,11 @@ const ReportUseLandPage = () => {
     const [filterQuery, setFilterQuery] = React.useState<IFilter>(initialFilterQuery);
     const { width } = useWindowSize();
     const [page, setPage] = React.useState(1);
-    const [id, setId] = React.useState(47);
+    const [id, setId] = React.useState(65);
     const [dataYear, setDataYear] = React.useState([]);
     const [dataProduct, setDataProduct] = React.useState([]);
     const [dataCate, setDataCate] = React.useState([]);
+    console.log('🚀 ~ ReportUseLandPage ~ dataCate:', dataCate);
     const [valueOptions, setValueOptions] = React.useState<string>(TimeType.MONTH);
     const textReportStyle: any = {
         color: '#fff',
@@ -174,7 +175,7 @@ const ReportUseLandPage = () => {
                 //         Xuất Excel
                 //     </Button>
                 // }
-                title="Báo cáo doanh thu"
+                title="Báo cáo doanh thuss"
             />
 
             <Container>
@@ -268,7 +269,7 @@ const ReportUseLandPage = () => {
                                             Lợi nhuận
                                         </Row>
                                         <Row justify="start" style={textReportStyle}>
-                                            <strong>{currencyFormat(data?.total_gain || 25150000)}</strong>
+                                            <strong>{currencyFormat(data?.total_gain || 5150000)}</strong>
                                         </Row>
                                         <Row justify="end">
                                             <DropboxOutlined
@@ -324,7 +325,7 @@ const ReportUseLandPage = () => {
                         dataSource={dataProduct}
                         columns={[...columns(page)]}
                         // total={data?.reportLandData && data?.reportLandData?.paging?.totalItem}
-                        total={10}
+                        total={dataProduct.length}
                     />
                 </CardComponent>
             </Container>

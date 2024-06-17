@@ -6,6 +6,7 @@ export const STATUS = {
 export const ROLE = {
     ROOT_ADMIN: 'admin',
     MANAGER: 'manager',
+    CUS: 'customer',
     TECHNICIAN: 'technician',
     CARETAKER: 'caretaker', // kế toán
     MANAGER_TECHNICIAN: 'manager_technician', // quản lý kho

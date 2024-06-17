@@ -20,6 +20,7 @@ const SidebarContent = ({
     handleCallbackCollapsed?: () => void;
 }) => {
     const { state } = useCallContext();
+    console.log('🚀 ~ state:', state);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -106,7 +107,7 @@ const SidebarContent = ({
                             selectedKeys={[selectedKeys]}
                             mode="inline"
                             style={{ color: '#fff' }}
-                            items={switchSidebar('admin')}
+                            items={state?.info?.role === 2 ? switchSidebar('customer') : switchSidebar('admin')}
                             // items={itemsAdmin}
                             theme={MAINBACKGROUND}
                             // items={itemsAdmin}

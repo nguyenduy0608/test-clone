@@ -9,6 +9,7 @@ const OrderPage = React.lazy(() => import('@/features/App/home/components/Order'
 const AllBookPage = React.lazy(() => import('@/features/App/home/components/AllBook'));
 //work
 const CustomerPage = React.lazy(() => import('@/features/App/customer/page'));
+const DoccumentPage = React.lazy(() => import('@/features/App/document/page'));
 const AuthorPage = React.lazy(() => import('@/features/App/author/page'));
 const ProductPage = React.lazy(() => import('@/features/App/product/page'));
 const ProductForm = React.lazy(() => import('@/features/App/product/page/form'));
@@ -35,6 +36,14 @@ const AdminRoutes = [
         element: (
             <Lazy>
                 <AuthorPage />
+            </Lazy>
+        ),
+    },
+    {
+        path: routerPage.document,
+        element: (
+            <Lazy>
+                <DoccumentPage />
             </Lazy>
         ),
     },

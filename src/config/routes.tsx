@@ -5,7 +5,7 @@ const LoginPage = React.lazy(() => import('@/features/Auth/Login/pages'));
 import AccountantRoutes from './Accountant.routes';
 import AdminRoutes from './Admin.routes';
 import { routerPage } from './contants.routes';
-import EditorRoutes from './Editor.routes';
+import CusRoutes from './Editor.routes';
 import { PublicRoutes } from './Lazy.routes';
 
 // todo: auth router khi chưa đăng nhập
@@ -18,4 +18,4 @@ const AuthRoutes = [
     ...PublicRoutes,
 ];
 
-export { AdminRoutes, AuthRoutes, EditorRoutes, AccountantRoutes };
+export { AdminRoutes, AuthRoutes, CusRoutes as EditorRoutes, AccountantRoutes };

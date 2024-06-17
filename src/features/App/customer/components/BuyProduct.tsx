@@ -32,7 +32,6 @@ const BuyForm = ({
     handleCloseForm?: any;
     values?: any;
 }) => {
-    console.log('🚀 ~ values:', values);
     const [form] = Form.useForm();
     const { id } = useParams();
     const navigate = useNavigate();
@@ -49,7 +48,6 @@ const BuyForm = ({
         const dataUpload = {
             ...data,
         };
-        console.log('🚀 ~ handleSubmit ~ dataUpload:', dataUpload);
         axios
             .put(
                 `http://localhost:5243/api/Cart/add-product-to-cart?cartId=${dataUpload?.name?.value}&productId=${dataUpload?.phoneNumber?.value}`

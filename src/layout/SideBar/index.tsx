@@ -11,7 +11,7 @@ const SideBar = ({
     collapsedMobile: boolean;
     handleCallbackCollapseMobile: () => void;
 }) => {
-    const [collapsed, setCollapsed] = React.useState(false);
+    const [collapsed, setCollapsed] = React.useState(true);
     const { width } = useWindowSize();
 
     const handleCallbackCollapsed = () => {

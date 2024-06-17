@@ -81,7 +81,7 @@ const ReportCostPage = () => {
     }, []);
     const getData = async () => {
         const res = await axios.get(
-            'http://localhost:5243/api/Customers/topNCustomerHaveHighestValueOfInterval?n=10&from=2022-02-02&to=2023-02-02'
+            'http://localhost:5243/api/Customers/topNCustomerHaveHighestValueOfInterval?n=10&from=2022-02-02&to=2024-02-02'
         );
         setDataCus(res?.data);
     };
@@ -176,6 +176,7 @@ const ReportCostPage = () => {
             console.error(error);
         }
     };
+
     return (
         <>
             <TopBar
@@ -196,7 +197,7 @@ const ReportCostPage = () => {
             <Container>
                 <CardComponent bodyStyle={{ border: RADIUS }} title={'Top 10 khách hàng trong năm'}>
                     <Row justify="start" style={{ width: '100%' }}>
-                        <Col span={18}>
+                        <Col span={24}>
                             <HighchartsReact
                                 highcharts={Highcharts}
                                 options={OptionsChartUseLand({

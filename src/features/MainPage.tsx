@@ -10,10 +10,13 @@ import LocalStorage from '../apis/LocalStorage';
 import ManageStorageRoutes from '@/config/ManageStorage.routes';
 import ManagePolicyRoutes from '@/config/ManagePolicy.routes';
 import jwtDecode from 'jwt-decode';
+import CusRoutes from '@/config/Editor.routes';
 const switchRoute = (role: string) => {
     switch (role) {
         case ROLE.ROOT_ADMIN:
             return AdminRoutes;
+        case ROLE.CUS:
+            return CusRoutes;
         default:
             return PublicRoutes;
     }
@@ -21,6 +24,7 @@ const switchRoute = (role: string) => {
 
 // config routes
 const MainPage = ({ role }: { role: string }) => {
+    console.log('🚀 ~ role:', role);
     const navigate = useNavigate();
     const { pathname } = useLocation();
 
@@ -39,7 +43,7 @@ const MainPage = ({ role }: { role: string }) => {
             setLogged(true);
             if (pathname === routerPage.register || pathname === routerPage.login) {
                 switchSidebar(role);
-                navigate('/home');
+                navigate('/');
             }
         } else {
             switch (pathname) {

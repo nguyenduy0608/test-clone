@@ -43,7 +43,7 @@ const UserInfo = () => {
             <Popconfirm
                 title={<strong style={{ marginTop: '10px' }}>Bạn chắc chắn muốn đăng xuất tài khoản này?</strong>}
                 onConfirm={async () => {
-                    const res = await AxiosClient.delete('/auth/logout');
+                    // const res = await AxiosClient.delete('/auth/logout');
                     // if(res.status)
                     LocalStorage.removeToken();
                     window.location.reload();

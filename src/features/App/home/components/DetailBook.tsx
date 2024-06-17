@@ -1,22 +1,46 @@
 import CardComponent from '@/components/CardComponent';
 import Container from '@/layout/Container';
-import { Button, Col, Rate, Row } from 'antd';
+import { Button, Col, Rate, Row, Select } from 'antd';
 import { useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { homeService } from '../service';
 import CustomScrollbars from '@/components/CustomScrollbars';
 import { FaStar } from 'react-icons/fa';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Footer from './Footer';
 import CateComponent from './CateComponent';
+import axios from 'axios';
+import { currencyFormat } from '@/utils';
+const categoryNames = {
+    1: 'Truyện trinh thám',
+    2: 'Truyện kinh dị',
+    3: 'Truyện hành động',
+    4: 'Truyện hài kịch',
+    5: 'Truyện tình cảm',
+};
 const DetailBook = () => {
     const { id } = useParams();
+    const [buyingCarts, setBuyingCarts] = useState([]);
+    const [idCart, setIdCart] = useState(0);
     const navigator = useNavigate();
-    const { data, isLoading, refetch, isRefetching } = useQuery<any>(['detailbook', id], () =>
-        homeService.getDetail(id)
+    const { data, isLoading, refetch, isRefetching } = useQuery<any>(['products', location], () =>
+        axios.get(`http://localhost:5243/api/Products/${id}`, { params: { id } })
     );
-    const [isStarFilled, setIsStarFilled] = React.useState(false);
+    console.log('🚀 ~ DetailBook ~ data:', data);
 
+    const [isStarFilled, setIsStarFilled] = React.useState(false);
+    useEffect(() => {
+        const fetchBuyingCarts = async () => {
+            try {
+                const response = await axios.get('http://localhost:5243/api/Cart/getBuyingCartsByUserId?userId=1');
+                setBuyingCarts(response.data);
+            } catch (error) {
+                console.error('Error fetching buying carts:', error);
+            }
+        };
+
+        fetchBuyingCarts();
+    }, []);
     const handleStarClick = () => {
         setIsStarFilled(!isStarFilled); // Đảo ngược trạng thái của isStarFilled
     };
@@ -46,14 +70,16 @@ const DetailBook = () => {
 
                             <Col span={18}>
                                 <p style={{ fontSize: 20 }}>
-                                    <strong>{data?.title || '---'}</strong>
+                                    <strong>{data?.data?.name || '---'}</strong>
                                 </p>
                                 <div style={{ display: 'flex', justifyContent: 'start' }}>
                                     <p style={{ color: '#0c6', marginRight: '2rem' }}>
-                                        <strong style={{ color: 'black' }}>Tác Giả :</strong> {data?.author || '---'}
+                                        <strong style={{ color: 'black' }}>Tác Giả :</strong>{' '}
+                                        {data?.data?.authorobj?.name || '---'}
                                     </p>
                                     <p style={{ color: '#0c6' }}>
-                                        <strong style={{ color: 'black' }}>Phát Hành :</strong> {data?.author || '---'}
+                                        <strong style={{ color: 'black' }}>Phát Hành :</strong>{' '}
+                                        {data?.author || 'Nhà xuất bản Kim Đồng'}
                                     </p>
                                 </div>
                                 <div
@@ -88,25 +114,50 @@ const DetailBook = () => {
                                             <strong>{data?.price || '132.000'} VNĐ</strong>
                                         </h1>
                                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                            <p>Giá bìa: {data?.coverPrice || '164.000'} VNĐ</p>
-                                            <p>Tiết kiệm: {data?.savings || '32.000'} VNĐ</p>
+                                            <p>Giá bìa: {currencyFormat(data?.data?.salePrice) || '164.000'} VNĐ</p>
+                                            <p>Tiết kiệm: {data?.savings || '12.000'} VNĐ</p>
                                         </div>
                                     </Col>
                                     <Col
                                         span={12}
                                         style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                                     >
+                                        <Select
+                                            style={{ padding: '5px 0' }}
+                                            onChange={(value) => {
+                                                setIdCart(value);
+                                            }}
+                                            placeholder="Chọn cart"
+                                        >
+                                            {buyingCarts?.map((cart: any) => {
+                                                return <Select.Option key={cart?.id}>{cart?.id}</Select.Option>;
+                                            })}
+                                        </Select>
                                         <Button
                                             style={{
                                                 backgroundColor: '#0c6',
                                                 color: 'white',
-                                                marginTop: '1rem',
+                                                marginLeft: 8,
                                                 width: '50%',
-                                                height: '50px',
+                                                height: '40px',
                                             }}
-                                            onClick={() => navigator('/cart')}
+                                            onClick={async () => {
+                                                const res = await axios.put(
+                                                    'http://localhost:5243/api/Cart/add-product-to-cart',
+                                                    null, // Không cần payload trong thân yêu cầu
+                                                    {
+                                                        params: {
+                                                            cartId: idCart,
+                                                            productId: id,
+                                                        },
+                                                    }
+                                                );
+                                                if (res?.status) {
+                                                    navigator('/cart');
+                                                }
+                                            }}
                                         >
-                                            Mua
+                                            Đặt hàng
                                         </Button>
                                     </Col>
                                 </Row>
@@ -131,16 +182,18 @@ const DetailBook = () => {
                         </p>
                         <div>
                             <p>
-                                <strong>Tên sách:</strong> The Falling Merman – Tập 1
+                                <strong>Tên sách:</strong>
+                                {data?.data?.name}
                             </p>
                             <p>
-                                <strong>Tác giả:</strong> Lân Tiềm – Chủ bút: RE-Vendur
+                                <strong>Tác giả:</strong>
+                                {data?.data?.authorobj?.name}
                             </p>
                             <p>
                                 <strong>Dịch giả:</strong> Đom Đóm
                             </p>
                             <p>
-                                <strong>Thể loại:</strong> truyện tranh màu
+                                <strong>Thể loại:</strong> {categoryNames?.[Number(data?.data?.category)]}
                             </p>
                             <p>
                                 <strong>Khổ sách:</strong> 14,5 x 20,5 cm

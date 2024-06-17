@@ -1,5 +1,6 @@
 import { RECORD_SIZE } from '@/config/theme';
 import { NEWS_STATUS } from '@/contants';
+import { currencyFormat } from '@/utils';
 import { FilePptOutlined, FileTextOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
 
@@ -16,74 +17,31 @@ export const columns = (page: number): ColumnsType<any> => [
     },
 
     {
-        title: 'Tên tiêu đề',
-        dataIndex: 'title',
-    },
-    {
-        title: 'Tài liệu',
-        dataIndex: 'type',
-        render: (value, record, index) =>
-            record?.type === 'technical' ? (
-                <Tag icon={<FileTextOutlined />} color="#696aad">
-                    Tài liệu kỹ thuật
-                </Tag>
-            ) : (
-                <Tag icon={<FilePptOutlined />} color="#6f795c">
-                    Hướng dẫn công việc
-                </Tag>
-            ),
-    },
-    {
-        title: 'Tên cây trồng',
-        dataIndex: ['flower', 'name'],
-        render: (value) => value || '---',
-    },
-
-    {
-        title: 'Vườn',
-        dataIndex: 'gardens',
-        width: '300px',
-        render: (value, record: any, index) => {
-            return record?.assignedToAllGardens ? (
-                <Tag key={index} color="#038fde">
-                    Tất cả
-                </Tag>
-            ) : record?.gardens.length > 0 ? (
-                record?.gardens?.map((item: any) => (
-                    <Tag key={index} color="#25b238">
-                        {item?.name}
-                    </Tag>
-                ))
-            ) : (
-                '---'
-            );
-        },
-    },
-    {
-        title: 'Thời gian chỉnh sửa',
-        dataIndex: 'updatedAt',
+        title: 'Tên giỏ hàng',
+        dataIndex: 'id',
         align: 'center',
-        render: (value, record, index) => moment(value).format('HH:mm DD/MM/YYYY'),
-    },
-    {
-        title: 'Người chỉnh sửa',
-        dataIndex: ['createdByUser', 'fullName'],
     },
     {
         title: 'Trạng thái',
-        dataIndex: 'status',
+        dataIndex: 'isPaid',
         align: 'center',
-        render: (value, record, index) =>
-            record?.status === NEWS_STATUS.POST ? (
-                <Tag color="#038fde">Đăng bài</Tag>
-            ) : (
-                <Tag color="#696aad">Lưu nháp</Tag>
-            ),
+    },
+    {
+        title: 'Giá gốc',
+        dataIndex: 'originalTotalPrice',
+        align: 'center',
+        render: (value) => currencyFormat(value),
+    },
+    {
+        title: 'Giá cần trả',
+        dataIndex: 'totalPrice',
+        align: 'center',
+        render: (value) => currencyFormat(value),
     },
     {
         title: 'Ngày tạo',
-        dataIndex: 'createdAt',
+        dataIndex: 'paidDate',
         align: 'center',
-        render: (value, record, index) => moment(value).format('HH:mm DD/MM/YYYY'),
+        render: (value, record, index) => moment(value).format('DD/MM/YYYY'),
     },
 ];

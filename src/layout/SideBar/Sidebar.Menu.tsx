@@ -39,12 +39,23 @@ export const itemsAdmin: any = [
         icon: <IconAntd icon="ReadOutlined" />,
     },
     {
+        label: 'Đơn hàng',
+        key: 'document',
+        icon: <IconAntd icon="DollarOutlined" />,
+    },
+    {
         label: 'Tài khoản',
         key: 'account',
         icon: <IconAntd icon="UserOutlined" />,
     },
 ];
-
+export const itemsCus: any = [
+    {
+        label: 'Trang chủ',
+        key: '',
+        icon: <IconAntd icon="HomeOutlined" />,
+    },
+];
 export const itemAccountants = [];
 
 export const itemsNews = [];

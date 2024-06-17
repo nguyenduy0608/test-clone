@@ -51,7 +51,7 @@ const Filter = ({
                 'DD-MM-YYYY'
             ).format('YYYY-MM-DD')}&to=${moment(dateString[1], 'DD-MM-YYYY').format('YYYY-MM-DD')} `
         );
-        setDataCate(data);
+        setDataCate(data?.data);
         setId(res?.data?.id);
     };
     const disabledDate = (current: any) => {

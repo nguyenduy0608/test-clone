@@ -16,6 +16,7 @@ import { rules } from '@/rules';
 import SelectComponent from '@/components/SelectComponent';
 import SelectDistrictComponent from './SelectDistrict';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 const OrderPage = () => {
     const [form] = Form.useForm();
@@ -23,7 +24,9 @@ const OrderPage = () => {
     const dataCart = location?.state?.data?.data;
     console.log('🚀 ~ OrderPage ~ dataCart:', dataCart);
     const [page, setPage] = React.useState(1);
-    const { data, isLoading, refetch, isRefetching } = useQuery<any>(['detailbook'], () => homeService.get({ page }));
+    const { data, isLoading, refetch, isRefetching } = useQuery<any>(['orders', location], () =>
+        axios.get(`http://localhost:5243//api/Cart/getBuyingCartsByUserId`, { params: { userId: 1 } })
+    );
 
     const initialDisplayCount = 3;
     const [displayCount, setDisplayCount] = React.useState(initialDisplayCount);
@@ -141,7 +144,7 @@ const OrderPage = () => {
                                     Chi tiết đơn hàng
                                 </strong>
                                 <div style={{ backgroundColor: '#f8f8f8', padding: 16, marginTop: 8 }}>
-                                    {dataCart.slice(0, displayCount).map((data: any, index: number) => (
+                                    {dataCart?.slice(0, displayCount)?.map((data: any, index: number) => (
                                         <div
                                             key={index}
                                             style={{
@@ -167,7 +170,7 @@ const OrderPage = () => {
                                             </div>
                                         </div>
                                     ))}
-                                    {!showAll && dataCart.length > initialDisplayCount && (
+                                    {!showAll && dataCart?.length > initialDisplayCount && (
                                         <Button
                                             icon={<CaretDownOutlined />}
                                             style={{

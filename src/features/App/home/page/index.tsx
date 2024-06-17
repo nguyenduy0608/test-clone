@@ -11,19 +11,40 @@ import CateComponent from '../components/CateComponent';
 import Container from '@/layout/Container';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+const apiUrl = 'http://localhost:5243/api/Products';
 
 const HomePage = () => {
     const [filterQuery, setFilterQuery] = React.useState<any>({});
     const [page, setPage] = React.useState(1);
+    const [dataBook, setDataBook] = React.useState<any>();
     const navigator = useNavigate();
-    const {
-        data: homes,
-        refetch,
-        isLoading,
-        isRefetching,
-    } = useQuery<any>(['homes', filterQuery, page], () => {
-        return homeService.get({ ...filterQuery, page });
-    });
+    const { data, isLoading, refetch, isRefetching } = useQuery<any>(['products', page, filterQuery, location], () =>
+        axios.get(apiUrl, { params: { page, ...filterQuery } })
+    );
+
+    const fetchProductsByCategory = async () => {
+        try {
+            // Tạo một mảng chứa các lời hứa axios với các giá trị category từ 1 đến 5
+            const requests = [1, 2, 3, 4, 5].map((category) =>
+                axios.get(`http://localhost:5243/api/Products/search-by-category`, {
+                    params: { category },
+                })
+            );
+
+            // Sử dụng Promise.all để chờ tất cả các lời hứa hoàn thành
+            const responses = await Promise.all(requests);
+
+            // Map qua các phản hồi để lấy dữ liệu cần thiết
+            const products = responses.map((response) => response.data);
+            setDataBook(products);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
+    React.useEffect(() => {
+        fetchProductsByCategory();
+    }, []);
     const contentStyle: React.CSSProperties = {
         height: '70vh',
         color: '#fff',
@@ -90,10 +111,12 @@ const HomePage = () => {
                             </div>
                         </Carousel>
                     </div>
-                    <CateComponent idBook={0} titleCate="Sách mới" dataCate={books} />
-                    <CateComponent idBook={1} titleCate="Sắp phát hành" dataCate={books} />
-                    <CateComponent idBook={2} titleCate="Sách bán chạy" dataCate={books} />
-                    <CateComponent idBook={3} titleCate="Sách giảm giá" dataCate={books} />
+                    <CateComponent idBook={0} titleCate="Sách mới" dataCate={data?.data} />
+                    <CateComponent idBook={1} titleCate="Sách trinh thám" dataCate={dataBook?.[0]} />
+                    <CateComponent idBook={2} titleCate="Sách hành động" dataCate={dataBook?.[1]} />
+                    <CateComponent idBook={3} titleCate="Sách kinh dị" dataCate={dataBook?.[2]} />
+                    <CateComponent idBook={4} titleCate="Sách tình cảm" dataCate={dataBook?.[3]} />
+                    <CateComponent idBook={5} titleCate="Sách hài kịch" dataCate={dataBook?.[4]} />
                     <Footer />
                 </CardComponent>
             </Container>

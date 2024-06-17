@@ -1,3 +1,4 @@
+import { currencyFormat } from '@/utils';
 import { Col, Row } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -52,12 +53,12 @@ const CateComponent = ({
                         <div style={{ textAlign: 'start', padding: '10px' }}>
                             <img
                                 src={book?.imageUrl}
-                                alt={book?.title}
+                                alt={book?.name}
                                 style={{ marginBottom: 10, width: '100%', height: 'auto' }}
                             />
-                            <strong style={{ color: '#0c6' }}>{truncateText(book?.title, 2)}</strong>
-                            <p style={{ marginBottom: 4, color: '#0c6' }}>{book?.author}</p>
-                            <b>{book?.price.toFixed(2)} VNĐ</b>
+                            <strong style={{ color: '#0c6' }}>{truncateText(book?.name, 2)}</strong>
+                            <p style={{ marginBottom: 4, color: '#0c6' }}>{book?.authorobj?.name}</p>
+                            <b>{currencyFormat(book?.salePrice)} VNĐ</b>
                         </div>
                     </Col>
                 ))}

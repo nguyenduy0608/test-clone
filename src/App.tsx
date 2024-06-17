@@ -35,7 +35,7 @@ function App() {
     }, []);
 
     React.useLayoutEffect(() => {
-        if (LocalStorage.getToken()) {
+        if (LocalStorage.getToken() === 'admin') {
             // authService.info().then((res) => {
             setRole('admin');
             dispatch({
@@ -43,6 +43,12 @@ function App() {
                 payload: { role: 1 },
             });
             // });
+        } else {
+            setRole('customer');
+            dispatch({
+                type: SET_INFO,
+                payload: { role: 2 },
+            });
         }
         // if (LocalStorage.getToken()) {
         //     ConfigService.get({page: 1, limit: 100}).then((res) => {

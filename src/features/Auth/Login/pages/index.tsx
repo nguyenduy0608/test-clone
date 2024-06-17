@@ -14,23 +14,20 @@ const LoginPage = () => {
 
     const handleSubmit = async (value: { phone_number: string; password: string }) => {
         setLoading(true);
-        // authService.login(value).then((res: any) => {
-        //     if (res.status) {
-        //         LocalStorage.setToken(res?.data?.accessToken);
+
+        if (value.phone_number === '0987654321') {
+            LocalStorage.setToken('admin');
+        } else {
+            LocalStorage.setToken('customer');
+        }
+
         Notification('success', 'Đăng nhập thành công');
-        LocalStorage.setToken('111111111111111111');
+
         wait(1500).then(() => {
             window.location.reload();
             setLoading(false);
         });
-
-        //     } else {
-        //         // Notification('warning', 'Đăng nhập thất bại');
-        //         setLoading(false);
-        //     }
-        // });
     };
-
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <div className="gx-app-login-wrap">
