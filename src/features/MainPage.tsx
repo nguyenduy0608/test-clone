@@ -43,7 +43,7 @@ const MainPage = ({ role }: { role: string }) => {
             setLogged(true);
             if (pathname === routerPage.register || pathname === routerPage.login) {
                 switchSidebar(role);
-                navigate('/');
+                role === 'admin' ? navigate('/') : navigate('/reportuseland');
             }
         } else {
             switch (pathname) {

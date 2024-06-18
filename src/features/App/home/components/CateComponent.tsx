@@ -6,8 +6,10 @@ const CateComponent = ({
     titleCate,
     idBook,
     dataCate,
+    link,
 }: {
     titleCate?: string;
+    link?: any;
     idBook?: number | string;
     dataCate?: any;
 }) => {
@@ -42,7 +44,7 @@ const CateComponent = ({
                 </Col>
             </Row>
             <Row gutter={16} justify="center">
-                {dataCate?.map((book: any, index: number) => (
+                {dataCate?.slice(0, 5).map((book: any, index: number) => (
                     <Col
                         onClick={() => {
                             navigate(`/detailbook/${book?.id}`);
@@ -52,7 +54,7 @@ const CateComponent = ({
                     >
                         <div style={{ textAlign: 'start', padding: '10px' }}>
                             <img
-                                src={book?.imageUrl}
+                                src={link?.[index]}
                                 alt={book?.name}
                                 style={{ marginBottom: 10, width: '100%', height: 'auto' }}
                             />

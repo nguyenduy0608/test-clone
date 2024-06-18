@@ -8,7 +8,6 @@ import { homeService } from '../service';
 import React from 'react';
 import IconAntd from '@/components/IconAntd';
 import styled from 'styled-components';
-import { books } from '../page';
 import Footer from './Footer';
 import FormComponent from '@/components/FormComponent';
 import FormItemComponent from '@/components/FormComponent/FormItemComponent';
